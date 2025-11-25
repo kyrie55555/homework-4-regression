@@ -1,1 +1,91 @@
+import nltk
+nltk.download("punkt")
+nltk.download("stopwords")
+nltk.download("wordnet")
+nltk.download("averaged_perceptron_tagger")
+nltk.download("brown")
+
+from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.corpus import stopwords, wordnet
+from nltk.stem import WordNetLemmatizer, PorterStemmer
+from nltk import pos_tag, FreqDist, bigrams, trigrams
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+
+# ----------------------------------------------------------
+# Текст для аналізу
+# ----------------------------------------------------------
+text = """
+Natural Language Processing (NLP) is a field of artificial intelligence
+that gives computers the ability to understand human language.
+It involves analyzing text, extracting meaning, and enabling machines 
+to interact with humans in a natural way.
+"""
+
+# ----------------------------------------------------------
+# Токенізація
+# ----------------------------------------------------------
+sentences = sent_tokenize(text)
+words = word_tokenize(text)
+print("Sentences:", sentences)
+print("Words:", words)
+
+# ----------------------------------------------------------
+# Видалення стоп-слів
+# ----------------------------------------------------------
+stop_words = set(stopwords.words("english"))
+filtered = [w.lower() for w in words if w.lower() not in stop_words and w.isalpha()]
+print("Filtered words:", filtered)
+
+# ----------------------------------------------------------
+# Лематизація
+# ----------------------------------------------------------
+lemmatizer = WordNetLemmatizer()
+lemmatized = [lemmatizer.lemmatize(w) for w in filtered]
+print("Lemmatized:", lemmatized)
+
+# ----------------------------------------------------------
+# Стемінг
+# ----------------------------------------------------------
+stemmer = PorterStemmer()
+stemmed = [stemmer.stem(w) for w in filtered]
+print("Stemmed:", stemmed)
+
+# ----------------------------------------------------------
+# POS Tagging
+# ----------------------------------------------------------
+tags = pos_tag(words)
+print("POS Tags:")
+print(tags)
+
+# ----------------------------------------------------------
+# Частотний аналіз
+# ----------------------------------------------------------
+fdist = FreqDist(filtered)
+print("Top 10 words:")
+print(fdist.most_common(10))
+
+# ----------------------------------------------------------
+# БІГРАМИ / ТРІГРАМИ
+# ----------------------------------------------------------
+bigrams_list = list(bigrams(filtered))
+trigrams_list = list(trigrams(filtered))
+print("Bigrams:", bigrams_list)
+print("Trigrams:", trigrams_list)
+
+# ----------------------------------------------------------
+# WordCloud
+# ----------------------------------------------------------
+wc = WordCloud(width=800, height=400, background_color="white").generate(" ".join(filtered))
+
+plt.figure(figsize=(12, 6))
+plt.imshow(wc, interpolation="bilinear")
+plt.axis("off")
+plt.show()
+
+# ----------------------------------------------------------
+# Частотний графік
+# ----------------------------------------------------------
+fdist.plot(20, title="Frequency Distribution")
+plt.show()
 
