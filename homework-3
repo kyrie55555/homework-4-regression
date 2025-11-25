@@ -1,1 +1,116 @@
+# --- Бібліотеки ---
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+from sklearn.datasets import load_iris, load_wine
+
+sns.set(style="whitegrid")
+plt.rcParams["figure.figsize"] = (10, 6)
+
+# -------------------------------
+# 1. TITANIC
+# -------------------------------
+
+titanic = sns.load_dataset("titanic")
+
+# --- Очищення даних ---
+titanic = titanic.dropna(subset=["age", "fare", "sex", "class", "survived"])
+
+# --- Розподіл віку ---
+plt.title("Розподіл віку пасажирів")
+sns.histplot(data=titanic, x="age", bins=30, kde=True, color="purple")
+plt.show()
+
+# --- Boxplot: Вік за класом ---
+plt.title("Вік за класами")
+sns.boxplot(data=titanic, x="class", y="age", palette="Set2")
+plt.show()
+
+# --- Barplot: Виживання за статтю ---
+plt.title("Виживання за статтю")
+sns.barplot(data=titanic, x="sex", y="survived", palette="Set1")
+plt.show()
+
+# --- Pairplot важливих фіч ---
+sns.pairplot(
+    titanic[["age", "fare", "survived"]],
+    hue="survived",
+    palette="husl"
+)
+plt.show()
+
+
+# -------------------------------
+# 2. IRIS
+# -------------------------------
+
+iris = load_iris()
+iris_df = pd.DataFrame(iris.data, columns=iris.feature_names)
+iris_df["species"] = iris.target
+
+# --- Scatterplot ---
+plt.title("Iris: довжина та ширина пелюстки")
+sns.scatterplot(
+    data=iris_df,
+    x="petal length (cm)", 
+    y="petal width (cm)",
+    hue="species",
+    palette="Set1"
+)
+plt.show()
+
+# --- Boxplot ---
+plt.title("Порівняння довжини чашолистка між видами")
+sns.boxplot(
+    data=iris_df,
+    x="species",
+    y="sepal length (cm)",
+    palette="Set2"
+)
+plt.show()
+
+# --- Heatmap кореляції ---
+plt.title("Кореляція в Iris")
+sns.heatmap(iris_df.corr(), annot=True, cmap="coolwarm")
+plt.show()
+
+
+# -------------------------------
+# 3. WINE
+# -------------------------------
+
+wine = load_wine()
+wine_df = pd.DataFrame(wine.data, columns=wine.feature_names)
+wine_df["target"] = wine.target
+
+# --- Histogram кількості алкоголю ---
+plt.title("Вміст алкоголю (Wine)")
+sns.histplot(wine_df["alcohol"], bins=20, kde=True, color="green")
+plt.show()
+
+# --- Scatterplot: Магній vs Феноли ---
+plt.title("Wine: Магній vs Феноли")
+sns.scatterplot(
+    data=wine_df,
+    x="magnesium",
+    y="phenols",
+    hue="target",
+    palette="Set1"
+)
+plt.show()
+
+# --- Pairplot ---
+sns.pairplot(
+    wine_df[["alcohol", "malic_acid", "ash", "target"]],
+    hue="target",
+    palette="husl"
+)
+plt.show()
+
+# --- Heatmap ---
+plt.title("Кореляція фіч у Wine")
+sns.heatmap(wine_df.corr(), annot=False, cmap="viridis")
+plt.show()
 
