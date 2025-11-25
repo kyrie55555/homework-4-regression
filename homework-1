@@ -1,1 +1,90 @@
+# Домашка: NumPy + Pandas
+# Тема: робота з масивами, статистика, обробка таблиць, візуалізація
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# ============================================================
+# 1. Генерація випадкового масиву NumPy
+# ============================================================
+
+np.random.seed(42)
+
+data = np.random.randint(1, 100, size=50)
+print("Масив:", data)
+print("Максимум:", data.max())
+print("Мінімум:", data.min())
+print("Середнє:", data.mean())
+print("Медіана:", np.median(data))
+
+# Гістограма
+plt.hist(data, bins=10, edgecolor="black")
+plt.title("Гістограма випадкових чисел")
+plt.xlabel("Значення")
+plt.ylabel("Частота")
+plt.show()
+
+
+# ============================================================
+# 2. Створення DataFrame у pandas
+# ============================================================
+
+df = pd.DataFrame({
+    "value": data,
+    "value_squared": data**2,
+    "is_even": data % 2 == 0
+})
+
+print("\nПерші 10 рядків DataFrame:")
+print(df.head(10))
+
+
+# ============================================================
+# 3. Групування та агрегація
+# ============================================================
+
+grouped = df.groupby("is_even")["value"].agg(["mean", "min", "max", "count"])
+print("\nСтатистика для парних / непарних:")
+print(grouped)
+
+
+# ============================================================
+# 4. Лінійна регресія (без sklearn, тільки NumPy)
+# ============================================================
+
+# x → 1,2,3,...,50
+x = np.arange(1, 51)
+y = data
+
+# Формула лінійної регресії:
+# slope = cov(x,y) / var(x)
+slope = np.cov(x, y, bias=True)[0,1] / np.var(x)
+intercept = y.mean() - slope * x.mean()
+
+print("\nЛінійна регресія (через NumPy):")
+print(f"Коефіцієнт (slope): {slope:.4f}")
+print(f"Вільний член (intercept): {intercept:.4f}")
+
+# Прогноз
+y_pred = slope * x + intercept
+
+# Графік регресії
+plt.scatter(x, y, color="blue", label="Дані")
+plt.plot(x, y_pred, color="red", linewidth=2, label="Лінійна модель")
+plt.title("Лінійна регресія через NumPy")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.legend()
+plt.show()
+
+
+# ============================================================
+# 5. Збереження результатів у CSV
+# ============================================================
+
+df["prediction"] = y_pred
+df.to_csv("results_numpy_pandas.csv", index=False)
+
+print("\nФайл results_numpy_pandas.csv збережено.")
 
