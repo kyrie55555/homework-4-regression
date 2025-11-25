@@ -1,1 +1,67 @@
+# K-Means та EM кластеризація (Gaussian Mixture Models)
+
+import numpy as np
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+from sklearn.mixture import GaussianMixture
+import matplotlib.pyplot as plt
+
+# -----------------------------
+# 1. Завантаження датасету
+# -----------------------------
+data = load_iris()
+X = pd.DataFrame(data.data, columns=data.feature_names)
+
+# Масштабування
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# -----------------------------
+# 2. K-MEANS
+# -----------------------------
+
+kmeans = KMeans(n_clusters=3, random_state=42)
+kmeans_labels = kmeans.fit_predict(X_scaled)
+
+print("K-Means Labels:")
+print(kmeans_labels[:20])
+
+# Візуалізація кластерів K-Means
+plt.figure(figsize=(7,5))
+plt.scatter(X_scaled[:, 0], X_scaled[:, 1], c=kmeans_labels)
+plt.title("K-Means Clustering (Iris)")
+plt.xlabel("Feature 1 (scaled)")
+plt.ylabel("Feature 2 (scaled)")
+plt.show()
+
+# -----------------------------
+# 3. EM Clustering (Gaussian Mixture Models)
+# -----------------------------
+
+gmm = GaussianMixture(n_components=3, covariance_type='full', random_state=42)
+gmm_labels = gmm.fit_predict(X_scaled)
+
+print("\nGMM Labels:")
+print(gmm_labels[:20])
+
+# Візуалізація кластерів GMM
+plt.figure(figsize=(7,5))
+plt.scatter(X_scaled[:, 0], X_scaled[:, 1], c=gmm_labels)
+plt.title("Gaussian Mixture Model Clustering (Iris)")
+plt.xlabel("Feature 1 (scaled)")
+plt.ylabel("Feature 2 (scaled)")
+plt.show()
+
+# -----------------------------
+# 4. Порівняння
+# -----------------------------
+compare = pd.DataFrame({
+    "KMeans": kmeans_labels,
+    "GMM": gmm_labels
+})
+
+print("\nПорівняння кластерів перших 20 зразків:")
+print(compare.head(20))
 
